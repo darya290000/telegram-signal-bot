@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحلیل ارز دیجیتال</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+            direction: rtl;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #3498db, #e74c3c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.1em;
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .input-group input, .input-group select {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #3498db, #2ecc71);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #e74c3c, #f39c12);
+        }
+
+        .btn-copy {
+            background: linear-gradient(45deg, #9b59b6, #8e44ad);
+        }
+
+        .output-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(236, 240, 241, 0.8);
+            border-radius: 15px;
+            border: 2px solid #bdc3c7;
+        }
+
+        .output-section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .command-output {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+            direction: ltr;
+            text-align: left;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .quick-btn {
+            padding: 10px 15px;
+            background: rgba(52, 152, 219, 0.1);
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            color: #3498db;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .quick-btn:hover {
+            background: #3498db;
+            color: white;
+        }
+
+        .tips {
+            background: rgba(46, 204, 113, 0.1);
+            border: 2px solid #2ecc71;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .tips h4 {
+            color: #27ae60;
+            margin-bottom: 10px;
+        }
+
+        .tips ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .tips li {
+            padding: 5px 0;
+            padding-right: 20px;
+            position: relative;
+        }
+
+        .tips li:before {
+            content: "✓";
+            color: #27ae60;
+            font-weight: bold;
+            position: absolute;
+            right: 0;
+        }
+
+        .alert {
+            background: rgba(231, 76, 60, 0.1);
+            border: 2px solid #e74c3c;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #c0392b;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .input-group {
+                flex-direction: column;
+            }
+            
+            .input-group input, .input-group select {
+                min-width: 100%;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 تحلیل ارز دیجیتال</h1>
+            <p>تحلیل هوشمند و خودکار ارزهای دیجیتال</p>
+        </div>
+
+        <div class="alert">
+            <strong>⚠️ هشدار:</strong> این تحلیل صرفاً جنبه آموزشی دارد و مشاوره مالی محسوب نمی‌شود. همیشه تحقیق شخصی انجام دهید.
+        </div>
+
+        <div class="input-section">
+            <div class="input-group">
+                <input type="text" id="cryptoSymbol" placeholder="نام ارز (مثل: BTC، ETH، XRP)" value="BTC">
+                <select id="analysisType">
+                    <option value="complete">تحلیل کامل</option>
+                    <option value="technical">فقط تکنیکال</option>
+                    <option value="fundamental">فقط فاندامنتال</option>
+                    <option value="strategy">فقط استراتژی</option>
+                </select>
+            </div>
+            
+            <div class="input-group">
+                <select id="timeframe">
+                    <option value="1h,4h,1d">همه تایم فریم‌ها</option>
+                    <option value="1h">1 ساعته</option>
+                    <option value="4h">4 ساعته</option>
+                    <option value="1d">روزانه</option>
+                    <option value="1w">هفتگی</option>
+                </select>
+                <select id="tradingStyle">
+                    <option value="all">همه سبک‌ها</option>
+                    <option value="scalping">اسکالپینگ</option>
+                    <option value="swing">سوینگ</option>
+                    <option value="position">پوزیشن</option>
+                </select>
+            </div>
+
+            <button class="btn" onclick="generateCommand()">🔮 تولید فرمان تحلیل</button>
+        </div>
+
+        <div class="quick-actions">
+            <div class="quick-btn" onclick="quickAnalysis('BTC')">₿ بیت کوین</div>
+            <div class="quick-btn" onclick="quickAnalysis('ETH')">♦ اتریوم</div>
+            <div class="quick-btn" onclick="quickAnalysis('XRP')">◆ ریپل</div>
+            <div class="quick-btn" onclick="quickAnalysis('ADA')">🔷 کاردانو</div>
+            <div class="quick-btn" onclick="quickAnalysis('SOL')">☀️ سولانا</div>
+            <div class="quick-btn" onclick="quickAnalysis('DOT')">🔴 پولکادات</div>
+        </div>
+
+        <div class="output-section" id="outputSection" style="display: none;">
+            <h3>📋 فرمان آماده برای کپی</h3>
+            <div class="command-output" id="commandOutput"></div>
+            <button class="btn btn-copy" onclick="copyCommand()">📋 کپی فرمان</button>
+            <button class="btn btn-secondary" onclick="shareCommand()">📤 اشتراک‌گذاری</button>
+        </div>
+
+        <div class="tips">
+            <h4>💡 نکات مهم:</h4>
+            <ul>
+                <li>فرمان را کپی کنید و در هر چت‌بات AI استفاده کنید</li>
+                <li>می‌توانید نام ارز را تغییر دهید</li>
+                <li>برای نتایج بهتر، تایم فریم مشخص کنید</li>
+                <li>همیشه مدیریت ریسک را رعایت کنید</li>
+                <li>این صفحه را بوک‌مارک کنید تا دوباره استفاده کنید</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const fullPrompt = `تو یک تحلیلگر خبره ارز دیجیتال هستی که باید تحلیل کاملی از {CRYPTO_SYMBOL} ارائه دهی. این تحلیل باید شامل تمام جنبه‌های مورد نیاز باشد:
+
+🔍 **تحلیل تکنیکال جامع**:
+- قیمت فعلی و تغییرات (24h, 7d, 30d)
+- سطوح حمایت و مقاومت در تایم فریم‌های {TIMEFRAME}
+- اندیکاتورهای کلیدی: RSI, MACD, Moving Averages, Bollinger Bands
+- پترن‌های قیمتی و احتمال تکمیل
+- تحلیل حجم معاملات
+
+📊 **تحلیل فاندامنتال**:
+- اخبار و رویدادهای اخیر
+- پارتنرشیپ‌ها و آپدیت‌های تکنولوژی
+- وضعیت بازار کلی کریپتو
+- تحلیل آن‌چین (در صورت امکان)
+
+⚡ **استراتژی‌های معاملاتی**:
+- {TRADING_STYLE}: نقاط ورود/خروج دقیق
+- مدیریت ریسک: سایز پوزیشن، استاپ لاس، تیک پرافیت
+- نسبت ریسک به سود (حداقل 1:2)
+- سناریوهای صعودی/نزولی/خنثی
+
+🎯 **خلاصه عملی**:
+- توصیه کلی: خرید/فروش/انتظار
+- سطوح کلیدی برای نظارت
+- زمان‌بندی پیشنهادی
+- هشدارهای مهم
+
+لطفاً تحلیل را عملی، دقیق و قابل اجرا ارائه بده. همیشه تأکید کن که این مشاوره مالی نیست و تحقیق شخصی ضروری است.`;
+
+        function generateCommand() {
+            const symbol = document.getElementById('cryptoSymbol').value.toUpperCase() || 'BTC';
+            const analysisType = document.getElementById('analysisType').value;
+            const timeframe = document.getElementById('timeframe').value;
+            const tradingStyle = document.getElementById('tradingStyle').value;
+            
+            let command = fullPrompt
+                .replace('{CRYPTO_SYMBOL}', symbol + '/USDT')
+                .replace('{TIMEFRAME}', timeframe)
+                .replace('{TRADING_STYLE}', getTradingStyleText(tradingStyle));
+            
+            // تنظیم نوع تحلیل
+            if (analysisType !== 'complete') {
+                command = customizeAnalysisType(command, analysisType);
+            }
+            
+            document.getElementById('commandOutput').textContent = command;
+            document.getElementById('outputSection').style.display = 'block';
+            
+            // اسکرول به نتیجه
+            document.getElementById('outputSection').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        }
+
+        function getTradingStyleText(style) {
+            const styles = {
+                'all': 'کوتاه مدت (اسکالپینگ)، میان مدت (سوینگ)، بلند مدت (پوزیشن)',
+                'scalping': 'کوتاه مدت (اسکالپینگ - 5m, 15m, 1h)',
+                'swing': 'میان مدت (سوینگ - 4h, 1d)',
+                'position': 'بلند مدت (پوزیشن - 1w, 1M)'
+            };
+            return styles[style] || styles['all'];
+        }
+
+        function customizeAnalysisType(command, type) {
+            // در آینده می‌توان تحلیل را بر اساس نوع سفارشی کرد
+            return command;
+        }
+
+        function quickAnalysis(symbol) {
+            document.getElementById('cryptoSymbol').value = symbol;
+            generateCommand();
+        }
+
+        function copyCommand() {
+            const commandText = document.getElementById('commandOutput').textContent;
+            
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(commandText).then(() => {
+                    showNotification('فرمان کپی شد! ✅');
+                });
+            } else {
+                // روش قدیمی برای مرورگرهای قدیمی
+                const textArea = document.createElement('textarea');
+                textArea.value = commandText;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showNotification('فرمان کپی شد! ✅');
+            }
+        }
+
+        function shareCommand() {
+            const commandText = document.getElementById('commandOutput').textContent;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'فرمان تحلیل ارز دیجیتال',
+                    text: commandText
+                });
+            } else {
+                copyCommand();
+            }
+        }
+
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #2ecc71;
+                color: white;
+                padding: 15px 25px;
+                border-radius: 10px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                z-index: 1000;
+                font-weight: bold;
+                transform: translateX(300px);
+                transition: transform 0.3s ease;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(300px)';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        // اجرای خودکار در لود صفحه
+        window.addEventListener('load', () => {
+            showNotification('خوش آمدید! 🚀');
+        });
+    </script>
+</body>
+</html>
